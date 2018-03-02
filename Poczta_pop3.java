@@ -169,8 +169,7 @@ public class Poczta_pop3 {
         message = messagesInBox[i];
 
         Content = getTextFromMessage(message);
-        froms = message.getFrom();
-        
+        froms = message.getFrom(); 
          
         email = froms == null ? null : ((InternetAddress) froms[0]).getAddress();
         

@@ -34,6 +34,7 @@ public class Poczta_smtp extends javax.swing.JFrame {
     
     public Component frame;
     public static File file;
+    public int i = 0;
     final JFileChooser fc = new JFileChooser();
 
     public Poczta_smtp() {
@@ -118,13 +119,10 @@ public class Poczta_smtp extends javax.swing.JFrame {
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-            // Second part is attachment
+            // na razie tylko jeden załącznik
             messageBodyPart = new MimeBodyPart();
-            BodyPart messageBodyPart2 = new MimeBodyPart();
             DataSource source = new FileDataSource(file);
-            DataSource source2 = new FileDataSource(file);
             messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setDataHandler(new DataHandler(source2));
             messageBodyPart.setFileName(file.getName());
              
             multipart.addBodyPart(messageBodyPart);
@@ -314,11 +312,15 @@ public class Poczta_smtp extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int returnVal = fc.showOpenDialog(frame);
-        
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            file = fc.getSelectedFile();
-            list1.addItem(file.getName());
+        if (list1.countItems()>0){
+                JOptionPane.showMessageDialog(frame, "Możesz wysłać tylko jeden załącznik!", "Błąd dodania załącznika", JOptionPane.ERROR_MESSAGE);
+        } else {
+            int returnVal = fc.showOpenDialog(frame);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    file = fc.getSelectedFile();
+                    list1.addItem(file.getName());
+                }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -326,6 +328,7 @@ public class Poczta_smtp extends javax.swing.JFrame {
         int ID = list1.getSelectedIndex();       
         if (ID >= 0) {
             list1.delItem(ID);
+            i -= 1;
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

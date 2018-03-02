@@ -5,6 +5,11 @@
  */
 package poczta;
 
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,6 +22,8 @@ import javax.mail.MessagingException;
 import javax.mail.Store;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -36,6 +43,8 @@ public class Klient extends javax.swing.JFrame {
     public Poczta_pop3 pocztaClass;
     public Login loginClass;
     public static Klient klient;
+    public static JPopupMenu popupMenu;
+    public JMenuItem menuItemAdd,menuItemRemove,menuItemRemoveAll;
 
     public Klient() throws MessagingException, IOException, ClassNotFoundException, SQLException {
         initComponents();
@@ -50,7 +59,50 @@ public class Klient extends javax.swing.JFrame {
             Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        popupMenu = new JPopupMenu();
+        menuItemAdd = new JMenuItem("Add New Row");
+        menuItemRemove = new JMenuItem("Remove Current Row");
+        menuItemRemoveAll = new JMenuItem("Remove All Rows");
+        
+        popupMenu.add(menuItemAdd);
+        popupMenu.add(menuItemRemove);
+        popupMenu.add(menuItemRemoveAll);
+      
+        jTable1.addMouseListener(new TableMouseListener(jTable1)); 
+        jTable1.setComponentPopupMenu(popupMenu);
     }
+    
+    public class TableMouseListener extends MouseAdapter {
+     
+        private JTable table;
+
+        public TableMouseListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void mousePressed(MouseEvent event) {
+            // selects the row at which point the mouse is clicked
+            Point point = event.getPoint();
+            int currentRow = table.rowAtPoint(point);
+            table.setRowSelectionInterval(currentRow, currentRow);  
+        }
+    }
+
+    public void actionPerformed(ActionEvent event) {
+          menuItemAdd.addActionListener((ActionListener) this);
+        System.out.println("test");
+        JMenuItem menu = (JMenuItem) event.getSource();
+
+        System.out.println(menu.getName());
+        if (menu == menuItemAdd) 
+            addNewRow();
+    }
+     
+    private void addNewRow() {
+        System.out.println("test");
+    }
+     
     
     public static DefaultTableModel usunWiersze(DefaultTableModel model){
         int rowCount = model.getRowCount();
@@ -118,13 +170,8 @@ public class Klient extends javax.swing.JFrame {
         jTable1.setFillsViewportHeight(true);
         jTable1.setGridColor(new java.awt.Color(255, 255, 255));
         jTable1.setRowHeight(40);
-        jTable1.setSelectionBackground(new java.awt.Color(0, 204, 102));
-        jTable1.setSelectionForeground(new java.awt.Color(153, 153, 255));
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
+        jTable1.setSelectionBackground(new java.awt.Color(204, 204, 204));
+        jTable1.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(150);
@@ -296,11 +343,7 @@ public class Klient extends javax.swing.JFrame {
         Poczta_smtp wysylanie = new Poczta_smtp();
         wysylanie.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        
-    }//GEN-LAST:event_jTable1MouseClicked
-
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
