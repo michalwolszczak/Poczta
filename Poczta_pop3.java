@@ -1,6 +1,5 @@
 package poczta;
 
-import java.awt.List;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +8,6 @@ import java.sql.Statement;
 import java.util.*;
 import javax.mail.Address;
 import javax.mail.BodyPart;
-import javax.mail.FetchProfile;
-import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -19,9 +16,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.search.FlagTerm;
 import javax.swing.table.DefaultTableModel;
-//import static poczta.Klient.jTable1;
 
 public class Poczta_pop3 {
 
@@ -40,8 +35,7 @@ public class Poczta_pop3 {
 
    public static Store check(String host, String storeType, String user, String password,Store store) 
    {
-      try {
-      //create properties field
+      try {     
       Properties properties = new Properties();
 
       properties.put("imap.gmail.com.host", host);
@@ -50,7 +44,6 @@ public class Poczta_pop3 {
       properties.setProperty("mail.store.protocol", "imaps");
       Session emailSession = Session.getDefaultInstance(properties);
   
-      //create the POP3 store object and connect with the pop server
       store = emailSession.getStore("imaps");
 
       store.connect(host, user, password);
@@ -114,7 +107,7 @@ public class Poczta_pop3 {
                  "email VARCHAR(256))");/*/ 
 
             //stm = connection.createStatement();
-            stm.execute("INSERT INTO px_email(subject, text, email) VALUES('test', 'test2', 'm.normans@gmail.com') ");
+            //stm.execute("INSERT INTO px_email(subject, text, email) VALUES('test', 'test2', 'm.normans@gmail.com') ");
             stm.close();   
             connection.close();
        } catch (ClassNotFoundException | SQLException e) {
@@ -122,6 +115,53 @@ public class Poczta_pop3 {
        }
     }
 
+    public static String ConverDate(Date Date){
+        String date = Date.toString();
+        String clearDate="";
+        switch (date.substring(4,7)) {
+        case "Jan":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Styczeń "+date.substring(date.length()-4,date.length());
+          break;
+        case "Feb":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Luty "+date.substring(date.length()-4,date.length());
+          break;
+        case "Mar":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Marzec "+date.substring(date.length()-4,date.length());
+          break;
+        case "Apr":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Kwiecień "+date.substring(date.length()-4,date.length());
+          break;
+        case "May":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Maj "+date.substring(date.length()-4,date.length());
+          break;
+        case "Jun":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Czerwiec "+date.substring(date.length()-4,date.length());
+          break;          
+        case "Jul":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Lipiec "+date.substring(date.length()-4,date.length());
+          break;
+        case "Aug":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Sierpień "+date.substring(date.length()-4,date.length());
+          break;     
+        case "Sep":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Wrzesień "+date.substring(date.length()-4,date.length());
+          break;     
+        case "Oct":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Październik "+date.substring(date.length()-4,date.length());
+          break;     
+        case "Nov":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Listopad "+date.substring(date.length()-4,date.length());
+          break; 
+        case "Dec":
+          clearDate=date.substring(date.length()-20,date.length()-18)+" Grudzień "+date.substring(date.length()-4,date.length());
+          break; 
+          
+   }
+        
+        
+        return clearDate;
+    }
+    
    
     public static void Odbierz(String host, String storeType, String user, String password, Store store, int imap) throws MessagingException, IOException, ClassNotFoundException, SQLException{
       check(host, storeType, user, password, store);
@@ -172,8 +212,7 @@ public class Poczta_pop3 {
         froms = message.getFrom(); 
          
         email = froms == null ? null : ((InternetAddress) froms[0]).getAddress();
-        
-        stm.execute("INSERT INTO px_inbox(subject, contents, sender) VALUES('"+message.getSubject()+"','"+Content+"','"+email+"')");
+        stm.execute("INSERT INTO px_inbox(subject, contents, sender, date) VALUES('"+message.getSubject()+"','"+Content+"','"+email+"','"+ConverDate(message.getReceivedDate())+"')");
         //if (imap == 1) model.addRow(new Object[]{email,message.getSubject(),Content,message.getReceivedDate()});  
         //if (imap == 0) model.addRow(new Object[]{toAddresses.get(i),message.getSubject(),Content,message.getReceivedDate()});                               
       }
@@ -188,7 +227,7 @@ public class Poczta_pop3 {
             toAddresses.add(address.toString());
        }
                 
-        stm.execute("INSERT INTO px_outbox(subject, contents, receiver) VALUES('"+message.getSubject()+"','"+Content+"','"+toAddresses.get(i)+"')");
+        stm.execute("INSERT INTO px_outbox(subject, contents, receiver, date) VALUES('"+message.getSubject()+"','"+Content+"','"+toAddresses.get(i)+"','"+ConverDate(message.getReceivedDate())+"')");
       }
 
       //close the store and folder objects

@@ -19,8 +19,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
-import javax.mail.Store;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -29,7 +27,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.AbstractDocument.Content;
 import static poczta.Login.iconImage;
 
 /**
@@ -59,50 +56,7 @@ public class Klient extends javax.swing.JFrame {
             Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        popupMenu = new JPopupMenu();
-        menuItemAdd = new JMenuItem("Add New Row");
-        menuItemRemove = new JMenuItem("Remove Current Row");
-        menuItemRemoveAll = new JMenuItem("Remove All Rows");
-        
-        popupMenu.add(menuItemAdd);
-        popupMenu.add(menuItemRemove);
-        popupMenu.add(menuItemRemoveAll);
-      
-        jTable1.addMouseListener(new TableMouseListener(jTable1)); 
-        jTable1.setComponentPopupMenu(popupMenu);
-    }
-    
-    public class TableMouseListener extends MouseAdapter {
-     
-        private JTable table;
-
-        public TableMouseListener(JTable table) {
-            this.table = table;
-        }
-
-        @Override
-        public void mousePressed(MouseEvent event) {
-            // selects the row at which point the mouse is clicked
-            Point point = event.getPoint();
-            int currentRow = table.rowAtPoint(point);
-            table.setRowSelectionInterval(currentRow, currentRow);  
-        }
-    }
-
-    public void actionPerformed(ActionEvent event) {
-          menuItemAdd.addActionListener((ActionListener) this);
-        System.out.println("test");
-        JMenuItem menu = (JMenuItem) event.getSource();
-
-        System.out.println(menu.getName());
-        if (menu == menuItemAdd) 
-            addNewRow();
-    }
-     
-    private void addNewRow() {
-        System.out.println("test");
-    }
-     
+    }     
     
     public static DefaultTableModel usunWiersze(DefaultTableModel model){
         int rowCount = model.getRowCount();
@@ -231,10 +185,12 @@ public class Klient extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 934, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 934, Short.MAX_VALUE)
-                    .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(textArea1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jMenu1.setText("Plik");
@@ -306,7 +262,7 @@ public class Klient extends javax.swing.JFrame {
                 Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                while(rs.next()) model.addRow(new Object[]{rs.getString("sender"),rs.getString("subject"),rs.getString("contents"),""});
+                while(rs.next()) model.addRow(new Object[]{rs.getString("sender"),rs.getString("subject"),rs.getString("contents"),rs.getString("date")});
             } catch (SQLException ex) {
                 Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -331,7 +287,7 @@ public class Klient extends javax.swing.JFrame {
                 Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                while(rs.next()) model.addRow(new Object[]{rs.getString("receiver"),rs.getString("subject"),rs.getString("contents"),""});
+                while(rs.next()) model.addRow(new Object[]{rs.getString("receiver"),rs.getString("subject"),rs.getString("contents"),rs.getString("date")});
             } catch (SQLException ex) {
                 Logger.getLogger(Klient.class.getName()).log(Level.SEVERE, null, ex);
             }
